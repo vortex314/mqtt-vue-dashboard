@@ -22,8 +22,8 @@ div.red {
 
 <template>
 
-<div id="alive" v-bind:class="color">
-    {{lastUpdate}} {{upTime}}
+<div id="alive" v-bind:class="color" >
+    {{device}}
 </div>
 
 </template>
