@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
-import VueMaterial from 'vue-material'
-import 'vue-material/dist/vue-material.css'
+import { EventBus } from './event-bus.js';
 
 var vue  = new Vue({
   el: '#app',

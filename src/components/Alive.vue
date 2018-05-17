@@ -21,44 +21,87 @@ div.red {
 </style>
 
 <template>
+  <table border="2">
+      <tr v-for="device in devices">
+          <td  >
+            <div id="alive" v-bind:class="device.getColor()" >
+                {{device.name}}
+            </div>
+          </td>
+          <td  >
+            <div id="alive" v-bind:class="device.getColor()" >
+                {{device.value}}
+            </div>
+          </td>
+      </tr>
+  </table>
 
-<div id="alive" v-bind:class="color" >
-    {{device}}
-</div>
 
 </template>
 
 <script>
 
+import { EventBus } from '../event-bus.js';
+import  Topic  from '../topic.js'
+
+class Device {
+  constructor(name){
+    this.name=name
+    this.onUpdate("0")
+  }
+  onUpdate(message){
+    this.level=5;
+    this.lastUpdate = new Date().getTime()
+    this.value=message
+  }
+
+  onTimeout(){
+    if ( this.getDelta() < 2000 ) return;
+    if (this.level <= 5 && this.level > 0) this.level--;
+    else return;
+  }
+
+  getColor() {
+    if ( this.level > 4 ) return "green"
+    if ( this.level >0 ) return "orange"
+    return "red"
+  }
+
+  getDelta(){
+    return new Date().getTime() - this.lastUpdate
+  }
+
+}
+
 export default {
     name: 'alive',
     data() {
         return {
-            lastUpdate: new Date(),
-            upTime: 0,
-            color: "green",
-            level: 2
+            devices:[new Device("dev-dead")]
         }
     },
     created: function() {
-        // subscribe to mqtt src/device/system/upTime
-        // set timeout handler
         var self = this;
-        this.intervalid1 = setInterval(self.onTimeout,2000);
+        this.intervalId = setInterval(this.onTimeout,1000);
+        EventBus.register('src/+/system/upTime',this.eventHandler)
     },
-    props: ['device'],
     methods: {
-        onUpdate: function() {
-            this.color = "green"
+        eventHandler : function(event) {
+          var deviceName = Topic.getDevice(event.topic)
+          var device
+          for (var i=0;i< this.devices.length;i++){
+            device = this.devices[i]
+            if ( device.name == deviceName) {
+              device.onUpdate(event.message)
+              return;
+            }
+          }
+          this.devices.push(new Device(deviceName))
         },
         onTimeout: function() {
           console.log("timeout "+this.level)
-          if (this.level <= 2 && this.level > 0) this.level--;
-          else return;
-          if (this.level == 1) {
-              this.color = "orange"
-          } else {
-              this.color = "red"
+          for (var i=0;i< this.devices.length;i++){
+            this.devices[i].onTimeout();
           }
         }
     }
