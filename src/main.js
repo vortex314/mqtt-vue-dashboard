@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
 import { EventBus } from './event-bus.js';
+import { VueGridLayout } from 'vue-grid-layout'
 
 var vue  = new Vue({
   el: '#app',

@@ -44,6 +44,8 @@ div.red {
 import { EventBus } from '../event-bus.js';
 import  Topic  from '../topic.js'
 
+
+
 class Device {
   constructor(name){
     this.name=name
@@ -58,7 +60,6 @@ class Device {
   onTimeout(){
     if ( this.getDelta() < 2000 ) return;
     if (this.level <= 5 && this.level > 0) this.level--;
-    else return;
   }
 
   getColor() {
@@ -72,6 +73,7 @@ class Device {
   }
 
 }
+var DeviceRemoveTimeout=30000;
 
 export default {
     name: 'alive',
@@ -102,6 +104,7 @@ export default {
           console.log("timeout "+this.level)
           for (var i=0;i< this.devices.length;i++){
             this.devices[i].onTimeout();
+            if ( this.devices[i].getDelta()>DeviceRemoveTimeout) this.devices.splice(i,1)
           }
         }
     }
