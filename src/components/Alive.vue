@@ -42,6 +42,7 @@ div.red {
 <script>
 
 import { EventBus } from '../event-bus.js';
+import{ Mqtt } from '../mqtt.js'
 import  Topic  from '../topic.js'
 
 
@@ -79,13 +80,17 @@ export default {
     name: 'alive',
     data() {
         return {
-            devices:[new Device("dev-dead")]
+            devices:[new Device("dead device")]
         }
     },
     created: function() {
         var self = this;
         this.intervalId = setInterval(this.onTimeout,1000);
+
+    },
+    mounted:function() {
         EventBus.register('src/+/system/upTime',this.eventHandler)
+      Mqtt.subscribe('src/+/system/upTime');
     },
     methods: {
         eventHandler : function(event) {

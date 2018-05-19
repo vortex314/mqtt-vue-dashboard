@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Mqtt from './components/Mqtt'
-import { Topic } from './topic.js'
+
+//import { Topic } from './topic.js'
 export const EventBus = new Vue({
   data() {
       return {

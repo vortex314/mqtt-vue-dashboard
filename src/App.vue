@@ -92,7 +92,7 @@ a {
 
 .vue-grid-item .text {
     font-size: 24px;
-    text-align: center;
+    text-align: left;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -137,7 +137,6 @@ a {
 
 <div id="app">
     <mqtt host="limero.ddns.net" port=1884></mqtt>
-    <alive></alive>
     <img src="./assets/logo.png" width="60" height="60">
     <img src="https://hobbyundecided.files.wordpress.com/2018/04/thumb.png" width="90" height="90">
     <grid-layout
@@ -151,14 +150,36 @@ a {
                :margin="[10, 10]"
                :use-css-transforms="true"
        >
+       <grid-item v-for="item in layout"
+                  :x="item.x"
+                  :y="item.y"
+                  :w="item.w"
+                  :h="item.h"
+                  :i="item.i" :key="item.i">
+           {{item.i}}
+       </grid-item>
 
-           <grid-item v-for="item in layout"
-                      :x="item.x"
-                      :y="item.y"
-                      :w="item.w"
-                      :h="item.h"
-                      :i="item.i"><alive></alive>
-               {{item.i}}
+           <grid-item
+                      :x="1"
+                      :y="1"
+                      :w="4"
+                      :h="3"
+                      :i="1" :key="5"><alive></alive>
+
+           </grid-item>
+           <grid-item
+                      :x="3"
+                      :y="2"
+                      :w="2"
+                      :h="2"
+                      :i="3" :key="3"> <radial-gauge :value="377"></radial-gauge>
+           </grid-item>
+           <grid-item
+                      :x="5"
+                      :y="3"
+                      :w="2"
+                      :h="2"
+                      :i="4" :key="4"> <linear-gauge :value="377"></linear-gauge>
            </grid-item>
        </grid-layout>
 
@@ -171,6 +192,9 @@ a {
 import Mqtt from './components/Mqtt'
 import Alive from './components/Alive'
 import VueGridLayout from 'vue-grid-layout'
+import LinearGauge from 'vue-canvas-gauges/src/LinearGauge'
+import RadialGauge from 'vue-canvas-gauges/src/RadialGauge'
+
 
 var testLayout = [
 	    {"x":0,"y":0,"w":2,"h":2,"i":"0"},
@@ -188,11 +212,14 @@ export default {
         Alive,
         VueGridLayout,
         GridLayout,
-        GridItem
+        GridItem,
+        LinearGauge,
+        RadialGauge
     },
     data() {
         return {
             layout: testLayout,
+            mqtt:Mqtt
         }
     }
 }
